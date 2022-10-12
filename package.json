@@ -1,0 +1,24 @@
+{
+  "name": "relay",
+  "version": "0.0.0",
+  "description": "Quick and light requests proxy. Copies the request and relays to the destination server. #bozocors",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/freitzzz/relay.git"
+  },
+  "keywords": [
+    "proxy",
+    "cors",
+    "express"
+  ],
+  "author": "freitzzz",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/freitzzz/relay/issues"
+  },
+  "homepage": "https://github.com/freitzzz/relay#readme"
+}
