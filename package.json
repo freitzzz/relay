@@ -2,6 +2,7 @@
   "name": "relay",
   "version": "0.0.0",
   "description": "Quick and light requests proxy. Copies the request and relays to the destination server. #bozocors",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
