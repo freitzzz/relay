@@ -1,8 +1,10 @@
 import express from 'express';
 import cors from 'cors';
 
-import { Header, Url } from './src/relay.js';
+import { Header, Status, Url } from './src/relay.js';
 import axios from 'axios';
+
+axios.defaults.validateStatus = (_) => true;
 
 const app = express();
 
@@ -10,39 +12,40 @@ const corsOptions = {
     credentials: true
 };
 
+const bodyLimit = { limit: Number.MAX_SAFE_INTEGER };
+
+app.use(express.raw(bodyLimit));
+app.use(express.text(bodyLimit));
+app.use(express.json(bodyLimit));
+app.use(express.urlencoded(bodyLimit));
+
 app.all('*', cors(corsOptions), handler);
 
-app.get('', function (req, res) {
-    res.cookie()
-})
-
-function handler(req, res, next) {
+function handler(req, res) {
     const headers = req.headers;
 
     const destinationUrl = headers[Header.destinationUrlHeader];
 
     if (destinationUrl === undefined) {
-        bozoReply(res);
+        return bozoReply(res);
     } else {
-        relay(req, res);
+        return relay(req, res);
     }
 }
 
-function relay(req, res) {
-    const destinationRequest = Header.relayRequestCopy(req);
+async function relay(req, res) {
+    const destinationRequest = Header.expressToAxiosRequest(req);
 
-    return axios
-        .request(destinationRequest)
-        .then((response) => {
-            res.send(response.data);
+    try {
+        const response = await axios.request(destinationRequest);
+        res.headers = response.headers;
 
-            response.data;
-            response.headers;
-            response.request;
-            response.status;
-            response.status;
-            response.statusText;
-        });
+        return res.status(response.status).send(response.data);
+    } catch (error) {
+        console.error(error);
+
+        return res.status(Status.unknownErrorStatusCode).send(Status.unknownErrorReplyData);
+    }
 }
 
 function bozoReply(res) {
