@@ -1,15 +1,25 @@
-export const destinationUrlHeader = 'X-RELAY-URL';
+export const destinationUrlHeader = 'x-relay-url';
+const contentTypeHeader = 'content-type';
 
-export function relayRequestCopy(req) {
-    const headers = req.headers;
+export function expressToAxiosRequest(req) {
+    const headers = Object.assign({}, req.headers);
+    const contentType = headers[contentTypeHeader];
 
-    const destinationUrl = headers[destinationUrlHeader];
+    if (contentType === undefined) {
+        delete req.body;
+    }
+
+    const url = headers[destinationUrlHeader];
+    const method = req.method;
+    let data = req.body;
 
     delete headers[destinationUrlHeader];
-    delete req.params;
-    delete req.baseUrl;
+    delete headers.host;
 
-    req.url = destinationUrl;
-
-    return req;
+    return {
+        url: url,
+        method: method,
+        headers: headers,
+        data: data,
+    }
 }
