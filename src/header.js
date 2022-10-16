@@ -1,5 +1,7 @@
 export const destinationUrlHeader = 'x-relay-url';
+const bypassHeadersExposeHeader = 'x-bypass-expose-headers';
 const alwaysIncludeBodyHeader = 'x-include-body';
+const accessControlHeadersExposeHeader = 'access-control-expose-headers';
 
 export function expressToAxiosRequest(req) {
     const headers = Object.assign({}, req.headers);
@@ -22,5 +24,11 @@ export function expressToAxiosRequest(req) {
         method: method,
         headers: headers,
         data: data,
+    }
+}
+
+export function bypassExposeHeadersIfNeeded(req, res) {
+    if (req.headers[bypassHeadersExposeHeader] !== undefined) {
+        res.set(accessControlHeadersExposeHeader, '*');
     }
 }
