@@ -7,7 +7,7 @@ async function relay(req, res) {
 
     try {
         const response = await axios.request(destinationRequest);
-        res.headers = response.headers;
+        res.set(Object.assign({}, response.headers));
 
         return res.status(response.status).send(response.data);
     } catch (error) {
