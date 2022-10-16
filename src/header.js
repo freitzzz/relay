@@ -1,16 +1,17 @@
 export const destinationUrlHeader = 'x-relay-url';
-const contentTypeHeader = 'content-type';
+const alwaysIncludeBodyHeader = 'x-include-body';
 
 export function expressToAxiosRequest(req) {
     const headers = Object.assign({}, req.headers);
-    const contentType = headers[contentTypeHeader];
-
-    if (contentType === undefined) {
-        delete req.body;
-    }
+    const alwaysIncludeBody = headers[alwaysIncludeBodyHeader] !== undefined;
 
     const url = headers[destinationUrlHeader];
     const method = req.method;
+
+    if (!alwaysIncludeBody && !method.startsWith('P')) {
+        delete req.body;
+    }
+
     let data = req.body;
 
     delete headers[destinationUrlHeader];
